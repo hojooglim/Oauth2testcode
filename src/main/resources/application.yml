@@ -1,0 +1,16 @@
+spring:
+    security:
+        oauth2:
+            client:
+                registration:
+                    google:
+                        clientId: 991013114702-onqp7vli1s3jhej98vfvcqmp8kjm2gdd.apps.googleusercontent.com
+                        clientSecret: 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
+                        redirectUri: "{baseUrl}/login/oauth2/code/{registrationId}"
+                        scope:
+                            - email
+                            - profile
+
+jwt:
+    issuer: ajufresh@gmail.com
+    secret_key: study-springboot

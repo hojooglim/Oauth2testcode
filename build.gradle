@@ -22,13 +22,32 @@ repositories {
 }
 
 dependencies {
+    //oauth
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    //jwt
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'     //jwt 라이브러리
+    implementation 'javax.xml.bind:jaxb-api:2.3.1' // xml이랑 매핑
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly 'org.projectlombok:lombok'
+
+    //spring security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+
     runtimeOnly 'com.mysql:mysql-connector-j'
+
+    compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {

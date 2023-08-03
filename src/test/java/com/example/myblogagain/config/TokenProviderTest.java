@@ -1,21 +1,21 @@
 package com.example.myblogagain.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import com.example.myblogagain.config.jwt.JwtProperties;
-import com.example.myblogagain.config.jwt.TokenProvider;
-import com.example.myblogagain.domain.User;
-import com.example.myblogagain.repository.UserRepository;
+
+import com.example.myblogagain.token.jwt.JwtProperties;
+import com.example.myblogagain.token.jwt.TokenProvider;
+import com.example.myblogagain.user.entity.User;
+import com.example.myblogagain.user.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
+import java.time.Duration;
+import java.util.Date;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.time.Duration;
-import java.util.Date;
-import java.util.Map;
 
 @SpringBootTest
 class TokenProviderTest {
@@ -97,7 +97,8 @@ class TokenProviderTest {
         Authentication authentication = tokenProvider.getAuthentication(token);
 
         // then
-        assertThat(((UserDetails) authentication.getPrincipal()).getUsername()).isEqualTo(userEmail);
+        assertThat(((UserDetails) authentication.getPrincipal()).getUsername()).isEqualTo(
+                userEmail);
     }
 
     @DisplayName("getUserId(): 토큰으로 유저 ID를 가져올 수 있다.")

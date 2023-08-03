@@ -1,12 +1,12 @@
 package com.example.myblogagain.config;
 
 import com.example.myblogagain.config.filter.TokenAuthenticationFilter;
-import com.example.myblogagain.config.jwt.TokenProvider;
 import com.example.myblogagain.config.oauth.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import com.example.myblogagain.config.oauth.OAuth2SuccessHandler;
 import com.example.myblogagain.config.oauth.OAuth2UserCustomService;
-import com.example.myblogagain.repository.RefreshTokenRepository;
-import com.example.myblogagain.service.UserService;
+import com.example.myblogagain.token.jwt.TokenProvider;
+import com.example.myblogagain.token.repository.RefreshTokenRepository;
+import com.example.myblogagain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +28,7 @@ public class WebOAuthSecurityConfig {
     private final OAuth2UserCustomService oAuth2UserCustomService;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -45,7 +45,7 @@ public class WebOAuthSecurityConfig {
         return new OAuth2SuccessHandler(tokenProvider,
                 refreshTokenRepository,
                 oAuth2AuthorizationRequestBasedOnCookieRepository(),
-                userService
+                userRepository
         );
     }
 
@@ -60,41 +60,43 @@ public class WebOAuthSecurityConfig {
         http
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-                .addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(tokenAuthenticationFilter(),
+                        UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(
                         SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+                        .permitAll()
                         .requestMatchers("/api/token").permitAll()
                         .requestMatchers("/api/**").authenticated()
-                        .anyRequest().permitAll());
-
-        http.oauth2Login(oauth2 ->
-                oauth2
-                    .loginPage("/login")
-                    .authorizationEndpoint(authorization->
-                            authorization
-                                .authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository()))
-                    .userInfoEndpoint(userInfo ->
-                            userInfo
-                                .userService(oAuth2UserCustomService))
-                    .successHandler(oAuth2SuccessHandler())
-        );
-
-        http.logout((logout) ->
-                logout
-                    .logoutSuccessUrl("/login")
-        );
-
-        http.exceptionHandling((exceptionHandling) ->
-                exceptionHandling
-                        .defaultAuthenticationEntryPointFor(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
-                             new AntPathRequestMatcher("/api/**"))
-        );
+                        .anyRequest().permitAll())
+                .oauth2Login(oauth2 ->
+                        oauth2
+                                .loginPage("/login")
+                                .authorizationEndpoint(authorization ->
+                                        authorization
+                                                .baseUri("/oauth2/authorization")
+                                                .authorizationRequestRepository(
+                                                        oAuth2AuthorizationRequestBasedOnCookieRepository()))
+                                .redirectionEndpoint(redirection ->
+                                        redirection
+                                                .baseUri("/*/oauth2/code/*"))
+                                .userInfoEndpoint(userInfo ->
+                                        userInfo
+                                                .userService(oAuth2UserCustomService))
+                                .successHandler(oAuth2SuccessHandler()))
+                .logout((logout) ->
+                        logout
+                                .logoutSuccessUrl("/login"))
+                .exceptionHandling((exceptionHandling) ->
+                        exceptionHandling
+                                .defaultAuthenticationEntryPointFor(
+                                        new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
+                                        new AntPathRequestMatcher("/api/**"))
+                );
 
         return http.build();
     }
-
 
 
 }

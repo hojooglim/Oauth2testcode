@@ -1,13 +1,18 @@
 package com.example.myblogagain.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.example.myblogagain.config.JwtFactory;
-import com.example.myblogagain.config.jwt.JwtProperties;
-import com.example.myblogagain.domain.RefreshToken;
-import com.example.myblogagain.domain.User;
-import com.example.myblogagain.dto.CreateAccessTokenRequest;
-import com.example.myblogagain.repository.RefreshTokenRepository;
-import com.example.myblogagain.repository.UserRepository;
+import com.example.myblogagain.token.dto.CreateAccessTokenRequest;
+import com.example.myblogagain.token.entity.RefreshToken;
+import com.example.myblogagain.token.jwt.JwtProperties;
+import com.example.myblogagain.token.repository.RefreshTokenRepository;
+import com.example.myblogagain.user.entity.User;
+import com.example.myblogagain.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,13 +24,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @SpringBootTest

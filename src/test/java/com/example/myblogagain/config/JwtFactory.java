@@ -1,6 +1,6 @@
 package com.example.myblogagain.config;
 
-import com.example.myblogagain.config.jwt.JwtProperties;
+import com.example.myblogagain.token.jwt.JwtProperties;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

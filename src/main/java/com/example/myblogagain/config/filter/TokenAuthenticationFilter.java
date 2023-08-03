@@ -1,6 +1,6 @@
 package com.example.myblogagain.config.filter;
 
-import com.example.myblogagain.config.jwt.TokenProvider;
+import com.example.myblogagain.token.jwt.TokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
